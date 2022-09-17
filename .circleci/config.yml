@@ -3,7 +3,7 @@ jobs:
  test:
    working_directory: ~/project
    docker:
-     - image: ruby:3.0.4-alpine3.16
+     - image: cimg/python:3.10.6
    steps:
      - checkout
      # - run:
@@ -15,15 +15,16 @@ jobs:
  deploy-aws:
    working_directory: ~/project
    docker:
-     - image: ruby:3.0.4-alpine3.16
+     - image: cimg/python:3.10.6
    steps:
      - checkout
-     - run:
-         name: Installing pip
-         working_directory: ~/project
-         command: apk add py3-pip
+     # - run:
+     #     name: Installing pip
+     #     working_directory: ~/project
+     #     command: apk add py3-pip
      - run:
          name: Installing deployment dependencies
+         working_directory: ~/project
          command: pip install awsebcli --upgrade
      - run:
          name: Deploying application to Elastic Beanstalk
