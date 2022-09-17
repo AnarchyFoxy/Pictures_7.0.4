@@ -1,0 +1,41 @@
+version: 2.1
+jobs:
+ test:
+   working_directory: ~/project
+   docker:
+     - image: ruby:3.0
+   steps:
+     - checkout
+     # - run:
+     #     command: python --version
+     - run:
+         command: bundle install
+     # - run:
+     #     command: ./manage.py test
+ deploy-aws:
+   working_directory: ~/project
+   docker:
+     - image: ruby:3.0
+   steps:
+     - checkout
+     - run:
+         name: Installing deployment dependencies
+         working_directory: ~/project
+         command: pip install awsebcli --upgrade
+     - run:
+         name: Deploying application to Elastic Beanstalk
+         command: eb deploy
+
+
+workflows:
+ version: 2.1
+ build-test-and-deploy:
+   jobs:
+     - test
+     - deploy-aws:
+         requires:
+           - test
+         filters:
+            branches:
+              only:
+                - main
