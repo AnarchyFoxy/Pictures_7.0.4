@@ -35,6 +35,8 @@
 /config/master.key
 
 # Elastic Beanstalk Files
-.elasticbeanstalk/*
+!.elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+.env
