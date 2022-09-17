@@ -19,8 +19,11 @@ jobs:
    steps:
      - checkout
      - run:
-         name: Installing deployment dependencies
+         name: Installing pip
          working_directory: ~/project
+         command: apk add py3-pip
+     - run:
+         name: Installing deployment dependencies
          command: pip install awsebcli --upgrade
      - run:
          name: Deploying application to Elastic Beanstalk
