@@ -8,8 +8,8 @@ jobs:
      - checkout
      # - run:
      #     command: python --version
-     - run:
-         command: bundle install
+     # - run:
+     #     command: bundle install
      # - run:
      #     command: ./manage.py test
  deploy-aws:
