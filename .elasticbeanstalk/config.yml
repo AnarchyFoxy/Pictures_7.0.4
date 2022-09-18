@@ -1,5 +1,5 @@
 branch-defaults:
-  main:
+  master:
     environment: Pictures-704-dev
     group_suffix: null
 global:
