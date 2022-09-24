@@ -1,34 +1,42 @@
 version: 2.1
+
+orbs:
+  gcp-cli: circleci/gcp-cli@2.4.1
+
 jobs:
  test:
-   working_directory: ~/project
+   working_directory: ~/code
    docker:
-     - image: cimg/python:3.10.6
+     - image: cimg/ruby:3.0.2
    steps:
      - checkout
-     # - run:
-     #     command: python --version
-     # - run:
-     #     command: bundle install
-     # - run:
-     #     command: ./manage.py test
- deploy-aws:
-   working_directory: ~/project
-   docker:
-     - image: cimg/python:3.10.6
+     - run:
+         command: ruby --version
+     - run:
+         command: bundle install
+     - run:
+         command: rails test
+
+ deploy-gcp:
+   working_directory: ~/code
+   executor: gcp-cli/default
+   parameters:
+      google-project-id:
+        type: env_var_name
+        default: GOOGLE_PROJECT_ID
+      gcloud-service-key:
+        type: env_var_name
+        default: GCLOUD_SERVICE_KEY
    steps:
-     - checkout
-     # - run:
-     #     name: Installing pip
-     #     working_directory: ~/project
-     #     command: apk add py3-pip
-     - run:
-         name: Installing deployment dependencies
-         working_directory: ~/project
-         command: pip install awsebcli --upgrade
-     - run:
-         name: Deploying application to Elastic Beanstalk
-         command: eb deploy
+      - checkout
+      - gcp-cli/install
+      - gcp-cli/initialize:
+          google-project-id: << parameters.google-project-id >>
+          gcloud-service-key: << parameters.gcloud-service-key >>
+      - run:
+          name: Deploy to Cloud Build Production
+          command: |
+            gcloud builds submit --async --config=cloudbuild.yaml .
 
 
 workflows:
@@ -36,10 +44,10 @@ workflows:
  build-test-and-deploy:
    jobs:
      - test
-     - deploy-aws:
+     - deploy-gcp:
          requires:
            - test
          filters:
             branches:
               only:
-                - master
+                - GCP-Deployment
