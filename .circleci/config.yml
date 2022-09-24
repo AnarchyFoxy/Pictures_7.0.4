@@ -14,8 +14,8 @@ jobs:
          command: ruby --version
      - run:
          command: bundle install
-     - run:
-         command: rails test
+    #  - run:
+    #      command: rails test
 
  deploy-gcp:
    working_directory: ~/code
